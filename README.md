@@ -18,8 +18,10 @@ This software is illustrated in `tutorial.Rmd`, where we show results from three
 
 ## Example - mvHMM for analysis of pupil and norepinephrine
 
-Here is an example of using our (stan) software in R from `tutorial.Rmd`
+We provide an overview  for using our (stan) software in R from `tutorial.Rmd`
 
+
+Get and plot neuromodulator and pupil, for selected substratification 
 ```r
 get_neuromodulators(ID = 123, info_vars, snippet = "stimulus",
                     substrat =  "Oddball_x_Arousal",
@@ -28,9 +30,6 @@ get_neuromodulators(ID = 123, info_vars, snippet = "stimulus",
                     detrend = T, plt = T)
 
 ```
-
-"https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png"
-
 <p align="center">
-<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png" width="500" heigth="250"/> 
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png" width="600" heigth="200"/> 
 </p>
