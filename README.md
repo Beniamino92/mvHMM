@@ -30,6 +30,15 @@ get_neuromodulators(ID = 123, info_vars, snippet = "stimulus",
                     detrend = T, plt = T)
 
 ```
+* Run MCMC sampler
+
+* Get posterior predictive + plot
+
+* Get time-varying posterior correlation + plot
+
+* Get time-varying state probabilities + plot
+
+
 <p align="center">
 <img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png" width="600" heigth="100"/> 
 </p>
