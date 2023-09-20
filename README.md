@@ -22,8 +22,6 @@ Here is an example of using our (stan) software in R from `tutorial.Rmd`
 
 ```r
 ID = 123 # average of sbj 1, 2, and 3
-substrat = "Oddball_x_Arousal"
-substrat_
 get_neuromodulators(ID = c(1, 2, 3), info_vars, snippet = "stimulus",
                     substrat =  "Oddball_x_Arousal",
                     groups = c("Oddball_ArousLow","Oddball_ArousHigh"), 
