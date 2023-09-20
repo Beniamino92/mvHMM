@@ -30,6 +30,10 @@ get_neuromodulators(ID = 123, info_vars, snippet = "stimulus",
                     detrend = T, plt = T)
 
 ```
+<p align="center">
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png" width="200" heigth="100"/> 
+</p>
+
 * Run MCMC sampler
 ```r
 K = 3 # number of states (selected among competing models using bridgesampling)
@@ -55,6 +59,9 @@ mvHMM_plot_predictive_joint(obs_group, y_hat,
                             z_hat, plt_pars_joint,
                             snippet = snippet, win_s = win_s)
 ```
+<p align="center">
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_postpred-1.png" width="600" heigth="100"/> 
+</p>
 
 * Get time-varying posterior correlation + plot
 ```r
@@ -64,13 +71,16 @@ mvHMM_plot_correlation(corr_sims, z_hat, plt_pars_joint$zcol,
                        substrat = "allTrials",
                        plt_state_probs = T, win_s = win_s)
 ```
+<p align="center">
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_correlation-1.png" width="600" heigth="100"/> 
+</p>
 
 * Get time-varying state probabilities + plot
 ```r
 mvHMM_plot_stateprobs(sims, plt_pars_joint$zcol,
                       obs_group, snippet = "stimulus, win_s = 5)
 ```
-
 <p align="center">
-<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png" width="600" heigth="100"/> 
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_stateprob-1.png" width="600" heigth="100"/> 
 </p>
+
