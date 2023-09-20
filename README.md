@@ -29,6 +29,8 @@ get_neuromodulators(ID = 123, info_vars, snippet = "stimulus",
 
 ```
 
+"https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png"
+
 <p align="center">
-<img src="https://github.com/Beniamino92/BayesianApproxHSMM/blob/master/figures/data_substrat.png" width="500" heigth="250"/> 
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png" width="500" heigth="250"/> 
 </p>
