@@ -21,7 +21,7 @@ This software is illustrated in `tutorial.Rmd`, where we show results from three
 We provide an overview  for using our (stan) software in R from `tutorial.Rmd`
 
 
-Get and plot neuromodulator and pupil, for selected substratification 
+* Get and plot time series of neuromodulator and pupil, for selected substratification 
 ```r
 get_neuromodulators(ID = 123, info_vars, snippet = "stimulus",
                     substrat =  "Oddball_x_Arousal",
