@@ -1,0 +1,349 @@
+---
+title: "Tutorial - mvHMM"
+author: "Beniamino Hadj-Amar"
+date: '2023-09-20'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Working directory
+
++ Change this to be the directory that '/include' is saved in 
+
+```{r setwd, include=TRUE,echo=TRUE, eval=TRUE,cache=TRUE}
+
+my_dir <- "~/Desktop_New/Research/Neuroscience/pupillometry_new/published_code/"
+setwd(my_dir)
+```
+
+
+## Preamble and Settings {.tabset}
+
+### Packages
+
+Loading the required packages.
+
+```{r packages, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE, message = FALSE, results = FALSE}
+
+library("R.matlab")
+library("rstan")
+library("plyr")
+library("dplyr")
+library("magrittr")
+library("bayesplot")
+library("bridgesampling")
+library("matrixStats")
+library("mvtnorm")
+library("reshape2")
+library("timeSeries")
+library("stringr")
+library("RColorBrewer")
+library("tibble")
+library("pdftools")
+library("fabricatr")
+library("lomb")
+library("writexl")
+library("imputeTS")
+
+
+stan_path <- "stan/HMM_MvNormEmis.stan" # stan path mvHMM
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+
+```
+
+### Utility Functions
+
+Calling utility functions
+```{r utils, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+
+source("include/util_data.R")
+source("include/util_mvHMM.R")
+source("include/util_stan.R")
+
+```
+
+### Auxiliary Settings
+
+Auxiliary settings for plots
+
+```{r auxiliary_plot_stuff, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+# - plt vars
+plt_pars <- list()
+plt_pars$pch <- c(18, 20)
+plt_pars_joint <- list()
+plt_pars_joint$pch <- c(20, 20, 20)
+plt_pars_joint$xlab <- rep("Time (Seconds)", 2)
+plt_pars_joint$ylab <- c("NE", "Pupil")
+plt_pars_joint$zcol <- brewer.pal(n = 4, name = "Spectral")
+neuromods  = c("NE", "Pupil")
+plt_pars_joint$neuromods <- neuromods
+corr_label <- paste("corr(", str_c(neuromods, 
+                                   collapse = ","), ")", sep = "")
+# info variables
+info_vars <- list()
+info_vars$model <- "Epilepsy Monitoring Unit"
+info_vars$id <- c(123)
+info_vars$id_aux <- c("CC-1,2,3")
+info_vars$disease <- rep("EMU", length(info_vars$id))
+info_vars$nm <- c("NE", "Pupil") 
+info_vars$brain_region <- rep("Amygdala", length(info_vars$id))
+# - 
+```
+
+### Select subject, available snippets, and substrats
+
+Select subject and Available snippets and substratifications
+```{r select_substrat, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+ID = 123 # average of sbj 1,2, and 3. 
+# snippets <- c("stimulus")
+snippet = "stimulus"
+substrat = "Oddball_x_Arousal"
+substrat_groups <- c("Oddball_ArousLow","Oddball_ArousHigh")
+```
+
+### Pre-process options
+Selecting window smoothing and de-trend options
+```{r pre_process_option, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+win_s <- 5 # window smoothing
+detrend <- TRUE # detrend time series
+```
+
+### MCMC options and hyperparms 
+Selecting number of MCMC iterations and hyperparameters
+```{r MCMC_option, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+n_MCMC = 5000
+mu_scale = 1.5
+tau_scale = 1.5 
+```
+
+
+
+## (1) Oddball and High Arousal {.tabset}
+
+### Select substrat group
+Selecting substratification (jj = 2: oddball x high arousal)
+```{r OddballHighArousal_group, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+jj = 2
+group = substrat_groups[jj]; cat(group)
+```
+
+### Get data + plot
+```{r OddballHighArousal_plot, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+obs_group <- get_neuromodulators(ID, info_vars, snippet = "stimulus", 
+                           substrat = substrat,
+                           groups = substrat_groups, 
+                           win_s = win_s,
+                           detrend = detrend, plt = T)[[jj]]
+```
+
+### MCMC Run
+Running MCMC sampler using stan model
+```{r OddballHighArousal_MCMC, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+K = 3 # number of states (selected among compiting models using bridgesampling)
+fit <- stan(file = stan_path,
+                      data = list(N = nrow(obs_group), D = 2, 
+                                  K = K, y = obs_group, 
+                                  mu_loc = 0,
+                                  mu_scale = mu_scale, 
+                                  alpha_0 = matrix(c(rep(1, K*K)), 
+                                                   nrow = K, ncol = K, byrow = TRUE),
+                                  tau_loc = 1, tau_scale = tau_scale,
+                                  Omega_shape = 1),  
+                      seed = 123, 
+                      chains = 1, iter = n_MCMC, cores = 1)
+print(fit, pars = c("mu", "tau", "gamma"), 
+                probs = c(.05, .95))
+```
+
+### Extract Fit + Diagnostics + Performance
+Extracting fit + convergence diagnostics + performances measures
+```{r OddballHighArousal_ExtractFit, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+sims <- rstan::extract(fit)
+check_all_diagnostics(fit)
+perf <- mvHMM_performance(fit, obs_group) 
+```
+
+### Posterior predictive + plot
+Posterior predictive plot
+```{r OddballHighArousal_postpred, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+mvHMM_predictive <- mvHMM_get_predictive(fit, obs_group, ndraw = 200)
+z_hat <- mvHMM_predictive$z_hat
+y_hat <- mvHMM_predictive$y_hat
+mvHMM_plot_predictive_joint(obs_group, y_hat,
+                                      z_hat, plt_pars_joint,
+                                      snippet = snippet, win_s = win_s)
+dev.off()
+```
+
+### Posterior correlation + plot
+Time-varying posterior correlation plot
+```{r OddballHighArousal_correlation, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+corr_sims <- mvHMM_get_correlation(sims, obs_group)
+mvHMM_plot_correlation(corr_sims, z_hat, plt_pars_joint$zcol,
+                       corr_label, 
+                       cols_grey, snippet = snippet, substrat = "allTrials",
+                       plt_state_probs = T, win_s = win_s)
+dev.off()
+```
+
+### State probabilities plot
+Time-varying state probability plot
+```{r OddballHighArousal_stateprob, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+mvHMM_plot_stateprobs(sims, plt_pars_joint$zcol,
+                      obs_group, snippet = snippet, win_s = win_s)
+```
+
+
+## (2) Oddball and Low Arousal{.tabset}
+
+### Select substrat group
+Selecting substratification (jj = 1: oddball x low arousal)
+```{r OddballLowArousal_group, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+jj = 1
+group = substrat_groups[jj]; cat(group)
+```
+
+### Get data + plot
+```{r OddballLowArousal_plot, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+obs_group <- get_neuromodulators(ID, info_vars, snippet = "stimulus", 
+                           substrat = substrat,
+                           groups = substrat_groups, 
+                           win_s = win_s,
+                           detrend = detrend, plt = T)[[jj]]
+```
+
+### MCMC Run
+Running MCMC sampler using stan model
+
+```{r OddballLowArousal_MCMC, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+K = 4 # number of states (selected among compiting models using bridgesampling)
+fit <- stan(file = stan_path,
+                      data = list(N = nrow(obs_group), D = 2, 
+                                  K = K, y = obs_group, 
+                                  mu_loc = 0,
+                                  mu_scale = mu_scale, 
+                                  alpha_0 = matrix(c(rep(1, K*K)), 
+                                                   nrow = K, ncol = K, byrow = TRUE),
+                                  tau_loc = 1, tau_scale = tau_scale,
+                                  Omega_shape = 1),  
+                      seed = 123, 
+                      chains = 1, iter = n_MCMC, cores = 1)
+print(fit, pars = c("mu", "tau", "gamma"), 
+                probs = c(.05, .95))
+```
+
+### Extract Fit + Diagnostics + Performance
+Extracting fit + convergence diagnostics + performances measures
+```{r OddballLowArousal_ExtractFit, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+sims <- rstan::extract(fit)
+check_all_diagnostics(fit)
+perf <- mvHMM_performance(fit, obs_group) 
+```
+
+### Posterior predictive + plot
+Posterior predictive plot
+```{r OddballLowArousal_postpred, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+mvHMM_predictive <- mvHMM_get_predictive(fit, obs_group, ndraw = 200)
+z_hat <- mvHMM_predictive$z_hat
+y_hat <- mvHMM_predictive$y_hat
+mvHMM_plot_predictive_joint(obs_group, y_hat,
+                                      z_hat, plt_pars_joint,
+                                      snippet = snippet, win_s = win_s)
+dev.off()
+```
+
+### Posterior correlation + plot
+Time-varying posterior correlation plot
+```{r OddballLowArousal_correlation, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+corr_sims <- mvHMM_get_correlation(sims, obs_group)
+mvHMM_plot_correlation(corr_sims, z_hat, plt_pars_joint$zcol,
+                       corr_label, 
+                       cols_grey, snippet = snippet, substrat = "allTrials",
+                       plt_state_probs = T, win_s = win_s)
+dev.off()
+```
+
+### State probabilities plot
+Time-varying state probability plot
+```{r OddballLowArousal_stateprob, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+mvHMM_plot_stateprobs(sims, plt_pars_joint$zcol,
+                      obs_group, snippet = snippet, win_s = win_s)
+```
+
+
+
+## (3) All Trials {.tabset}
+
+
+### Get data + plot
+```{r AllTrials_plot, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+obs <- get_neuromodulators(ID, info_vars, snippet = "stimulus", 
+                                      substrat = "allTrials",
+                                      groups = NULL, win_s = win_s,
+                                      detrend = detrend, plt = T) 
+```
+
+### MCMC Run
+Running MCMC sampler using stan model
+
+```{r AllTrials_MCMC, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+K = 3 # number of states (selected among compiting models using bridgesampling)
+fit <- stan(file = stan_path,
+            data = list(N = nrow(obs), D = 2, 
+                        K = K, y = obs, 
+                        mu_loc = 0,
+                        mu_scale = mu_scale, 
+                        alpha_0 = matrix(c(rep(1, K*K)), 
+                                         nrow = K, ncol = K, byrow = TRUE),
+                        tau_loc = 1, tau_scale =tau_scale,
+                        Omega_shape = 1),  
+            seed = 123, 
+            chains = 1, iter = n_MCMC, cores = 1)
+print(fit, pars = c("mu", "tau", "gamma"), 
+                probs = c(.05, .95))
+```
+
+### Extract Fit + Diagnostics + Performance
+Extracting fit + convergence diagnostics + performances measures
+```{r AllTrials_ExtractFit, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+sims <- rstan::extract(fit)
+check_all_diagnostics(fit)
+perf <- mvHMM_performance(fit, obs_group) 
+```
+
+### Posterior predictive + plot
+Posterior predictive plot
+```{r AllTrials_postpred, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+mvHMM_predictive <- mvHMM_get_predictive(fit, obs, ndraw = 200)
+z_hat <- mvHMM_predictive$z_hat
+y_hat <- mvHMM_predictive$y_hat
+mvHMM_plot_predictive_joint(obs, y_hat,
+                                      z_hat, plt_pars_joint,
+                                      snippet = snippet, win_s = win_s)
+dev.off()
+```
+
+### Posterior correlation + plot
+Time-varying posterior correlation plot
+```{r AllTrials_correlation, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+corr_sims <- mvHMM_get_correlation(sims, obs)
+mvHMM_plot_correlation(corr_sims, z_hat, plt_pars_joint$zcol,
+                       corr_label, 
+                       cols_grey, snippet = snippet, substrat = "allTrials",
+                       plt_state_probs = T, win_s = win_s)
+dev.off()
+```
+
+### State probabilities plot
+Time-varying state probability plot
+```{r AllTrials_stateprob, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
+mvHMM_plot_stateprobs(sims, plt_pars_joint$zcol,
+                      obs, snippet = snippet, win_s = win_s)
+```
+
+
