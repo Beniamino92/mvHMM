@@ -18,7 +18,7 @@ This software is illustrated in `tutorial.Rmd`, where we show results from three
 
 ## Example - mvHMM for analysis of pupil and norepinephrine
 
-We provide a snapshot of using our (stan) software in R from `tutorial.Rmd`
+We provide a snapshot of  `tutorial.Rmd` for using our (stan) software in R 
 
 
 * Get and plot time series of neuromodulator and pupil, for selected substratification 
