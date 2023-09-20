@@ -18,7 +18,7 @@ This software is illustrated in `tutorial.Rmd`, where we show results from three
 
 ## Example - mvHMM for analysis of pupil and norepinephrine
 
-We provide an overview  for using our (stan) software in R from `tutorial.Rmd`
+We provide a snapshot of using our (stan) software in R from `tutorial.Rmd`
 
 
 * Get and plot time series of neuromodulator and pupil, for selected substratification 
@@ -31,13 +31,45 @@ get_neuromodulators(ID = 123, info_vars, snippet = "stimulus",
 
 ```
 * Run MCMC sampler
+```r
+K = 3 # number of states (selected among competing models using bridgesampling)
+fit <- stan(file = stan_path,
+            data = list(N = nrow(obs_group), D = 2, 
+                                  K = K, y = obs_group, 
+                                  mu_loc = 0,
+                                  mu_scale = mu_scale, 
+                                  alpha_0 = matrix(c(rep(1, K*K)), 
+                                                   nrow = K, ncol = K, byrow = TRUE),
+                                  tau_loc = 1, tau_scale = tau_scale,
+                                  Omega_shape = 1),  
+            seed = 123, 
+            chains = 1, iter = n_MCMC, cores = 1)
+```
 
 * Get posterior predictive + plot
+```r
+mvHMM_predictive <- mvHMM_get_predictive(fit, obs_group, ndraw = 200)
+z_hat <- mvHMM_predictive$z_hat
+y_hat <- mvHMM_predictive$y_hat
+mvHMM_plot_predictive_joint(obs_group, y_hat,
+                            z_hat, plt_pars_joint,
+                            snippet = snippet, win_s = win_s)
+```
 
 * Get time-varying posterior correlation + plot
+```r
+corr_sims <- mvHMM_get_correlation(sims, obs_group)
+mvHMM_plot_correlation(corr_sims, z_hat, plt_pars_joint$zcol,
+                       corr_label, cols_grey, snippet = "stimulus",
+                       substrat = "allTrials",
+                       plt_state_probs = T, win_s = win_s)
+```
 
 * Get time-varying state probabilities + plot
-
+```r
+mvHMM_plot_stateprobs(sims, plt_pars_joint$zcol,
+                      obs_group, snippet = "stimulus, win_s = 5)
+```
 
 <p align="center">
 <img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png" width="600" heigth="100"/> 
