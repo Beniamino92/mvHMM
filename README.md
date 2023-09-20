@@ -16,7 +16,7 @@ This software is illustrated in `tutorial.Rmd`, where we show results from three
 3) All trials irrespective of stimulus type. 
 
 
-## Example - mvHMM
+## Example - mvHMM for analysis of pupil and norepinephrine
 
 Here is an example of using our (stan) software in R from `tutorial.Rmd`
 
@@ -26,4 +26,9 @@ get_neuromodulators(ID = 123, info_vars, snippet = "stimulus",
                     groups = c("Oddball_ArousLow","Oddball_ArousHigh"), 
                     win_s = 5,
                     detrend = T, plt = T)
-``` 
+
+```
+
+<p align="center">
+<img src="https://github.com/Beniamino92/BayesianApproxHSMM/blob/master/figures/data_substrat.png" width="500" heigth="250"/> 
+</p>
