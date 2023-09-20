@@ -31,7 +31,7 @@ get_neuromodulators(ID = 123, info_vars, snippet = "stimulus",
 
 ```
 <p align="center">
-<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png" width="400" heigth="200"/> 
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/data_substrat.png" width="400" heigth="170"/> 
 </p>
 
 * Run MCMC sampler
