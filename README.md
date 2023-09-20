@@ -60,7 +60,7 @@ mvHMM_plot_predictive_joint(obs_group, y_hat,
                             snippet = snippet, win_s = win_s)
 ```
 <p align="center">
-<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_postpred-1.png" width="600" heigth="100"/> 
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_postpred-1.png" width="400" heigth="170"/> 
 </p>
 
 * Get time-varying posterior correlation + plot
@@ -72,7 +72,7 @@ mvHMM_plot_correlation(corr_sims, z_hat, plt_pars_joint$zcol,
                        plt_state_probs = T, win_s = win_s)
 ```
 <p align="center">
-<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_correlation-1.png" width="600" heigth="100"/> 
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_correlation-1.png" width="400" heigth="170"/> 
 </p>
 
 * Get time-varying state probabilities + plot
@@ -81,6 +81,6 @@ mvHMM_plot_stateprobs(sims, plt_pars_joint$zcol,
                       obs_group, snippet = "stimulus, win_s = 5)
 ```
 <p align="center">
-<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_stateprob-1.png" width="600" heigth="100"/> 
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_stateprob-1.png" width="400" heigth="170"/> 
 </p>
 
