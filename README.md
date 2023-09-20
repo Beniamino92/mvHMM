@@ -11,9 +11,9 @@ The number of latent states, K, for an HMM was selected by inspecting the poster
 
 This software is illustrated in `tutorial.Rmd`, where we show results from three different scenarios: 
 
-* 1) trials with oddball and high arousal
-* 2) trials with oddball and low arousal.
-* 3) all trials irrespective of stimulus type. 
+1) trials with oddball and high arousal
+2) trials with oddball and low arousal.
+3) all trials irrespective of stimulus type. 
 
 
 ## Example - mvHMM
