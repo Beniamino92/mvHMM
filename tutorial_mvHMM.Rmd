@@ -164,7 +164,6 @@ print(fit, pars = c("mu", "tau", "gamma"),
 Extracting fit + convergence diagnostics + performances measures
 ```{r OddballHighArousal_ExtractFit, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
 sims <- rstan::extract(fit)
-check_all_diagnostics(fit)
 perf <- mvHMM_performance(fit, obs_group) 
 ```
 
@@ -241,7 +240,6 @@ print(fit, pars = c("mu", "tau", "gamma"),
 Extracting fit + convergence diagnostics + performances measures
 ```{r OddballLowArousal_ExtractFit, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
 sims <- rstan::extract(fit)
-check_all_diagnostics(fit)
 perf <- mvHMM_performance(fit, obs_group) 
 ```
 
@@ -312,7 +310,6 @@ print(fit, pars = c("mu", "tau", "gamma"),
 Extracting fit + convergence diagnostics + performances measures
 ```{r AllTrials_ExtractFit, include=TRUE, echo=TRUE, eval=TRUE, cache=FALSE}
 sims <- rstan::extract(fit)
-check_all_diagnostics(fit)
 perf <- mvHMM_performance(fit, obs_group) 
 ```
 
