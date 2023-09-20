@@ -14,6 +14,6 @@ This software is illustrated in `tutorial.Rmd`, where we show results from three
 tutorial.Rmd
 ```
 
-## Example - BayesApproxHSMM
+## Example - mvHMM
 
 Here is an example of using our (stan) software in R from `tutorial.Rmd`.
