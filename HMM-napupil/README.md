@@ -78,7 +78,7 @@ mvHMM_plot_correlation(corr_sims, z_hat, plt_pars_joint$zcol,
 * Get time-varying state probabilities + plot
 ```r
 mvHMM_plot_stateprobs(sims, plt_pars_joint$zcol,
-                      obs_group, snippet = "stimulus, win_s = 5)
+                      obs_group, snippet = "stimulus", win_s = 5)
 ```
 <p align="center">
 <img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/OddballLowArousal_stateprob-1.png" width="400" heigth="170"/> 
