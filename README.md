@@ -2,7 +2,7 @@
 
 
 <p align="center">
-<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/intro_neuro.png" width="400" heigth="170"/> 
+<img src="https://github.com/Beniamino92/mvHMM/blob/main/figures/neuro_intro.png" width="600" heigth="170"/> 
 </p>
 
 mvHMM contains the stan software (as well as R utilities) to model multivariate measurements of neuromodulators via a Bayesian hidden Markov model (HMM). We provide illustration of our approach for the following scenarios:
