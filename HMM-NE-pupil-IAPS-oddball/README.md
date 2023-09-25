@@ -1,15 +1,15 @@
 # HMM-NE-pupil-IAPS-oddball
 
-`/HMM-NE-pupil-IAPS-oddball/` contains the stan software (as well as R utilities) to model pupil and norepinephrine (NA) measurements using a Bayesian hidden Markov model (HMM) as detailed in Bang et. al (2023), "Noradrenaline tracks emotional modulation of attention in human amygdala", published in Current Biology. 
+`/HMM-NE-pupil-IAPS-oddball/` contains the stan software (as well as R utilities) to model pupil and norepinephrine (NE) measurements using a Bayesian hidden Markov model (HMM) as detailed in Bang et. al (2023), "Noradrenaline tracks emotional modulation of attention in human amygdala", published in Current Biology. 
 
 ## Overview
 
-We investigate the relationship between the pupil and NA measurements. The HMM is modeling the joint pupil and NA measurements as a sequence of visits to a finite number
+We investigate the relationship between the pupil and NE measurements. The HMM is modeling the joint pupil and NE measurements as a sequence of visits to a finite number
 of hidden states, with each state represented as a bivariate Gaussian distribution with state-specific means and a state-specific variance-covariance matrix for the pupil and NA measurements. 
 The number of latent states, K, for an HMM was selected by inspecting the posterior predictive fits and, in a more principled way, by calculating the ratio of marginal likelihoods from different models using the R package `bridgesampling`, whose compatibility with Stan makes it straightforward to estimate the marginal likelihood directly from a Stan output. 
 
 
-This software is illustrated in `tutorial_HMM-nepupil.Rmd`, where we show results from three different scenarios: 
+This software is illustrated in `tutorial_HMM-NE-pupil.Rmd`, where we show results from three different scenarios: 
 
 1) Trials with oddball and high arousal
 2) Trials with oddball and low arousal.
@@ -18,7 +18,7 @@ This software is illustrated in `tutorial_HMM-nepupil.Rmd`, where we show result
 
 ## Example - mvHMM for analysis of pupil and norepinephrine
 
-We provide a snapshot of  `tutorial_HMM-nepupil.Rmd` for using our (stan) software in R 
+We provide a snapshot of  `tutorial_HMM-NE-pupil.Rmd` for using our (stan) software in R 
 
 
 * Get and plot time series of neuromodulator and pupil, for selected substratification 
