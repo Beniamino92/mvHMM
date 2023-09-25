@@ -1,6 +1,6 @@
-# HMM-napupil
+# HMM-NA-pupil-IAPS-oddball
 
-`/HMM-napupil/` contains the stan software (as well as R utilities) to model pupil and norepinephrine (NA) measurements using a Bayesian hidden Markov model (HMM) as detailed in Bang et. al (2023), "Noradrenaline tracks emotional modulation of attention in human amygdala", published in Current Biology. 
+`/HMM-NA-pupil-IAPS-oddball/` contains the stan software (as well as R utilities) to model pupil and norepinephrine (NA) measurements using a Bayesian hidden Markov model (HMM) as detailed in Bang et. al (2023), "Noradrenaline tracks emotional modulation of attention in human amygdala", published in Current Biology. 
 
 ## Overview
 
